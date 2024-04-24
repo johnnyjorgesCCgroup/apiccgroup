@@ -1,0 +1,481 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Documentación de la API CCGROUP
+paths:
+  /products:
+    get:
+      summary: Obtiene todos los productos
+      description: Obtiene una lista de todos los productos.
+      responses:
+        '200':
+          description: Respuesta exitosa
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+    post:
+      summary: Crea un nuevo producto
+      description: Crea un nuevo producto con la información proporcionada en el cuerpo de la solicitud.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewProduct'
+      responses:
+        '201':
+          description: Producto creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+  /products/{id}:
+    get:
+      summary: Obtiene un producto por su ID
+      description: Obtiene un producto específico según su ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID del producto
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Respuesta exitosa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Producto no encontrado
+    put:
+      summary: Actualiza un producto existente
+      description: Actualiza un producto existente con la información proporcionada en el cuerpo de la solicitud.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID del producto
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewProduct'
+      responses:
+        '200':
+          description: Producto actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Producto no encontrado
+    delete:
+      summary: Elimina un producto existente
+      description: Elimina un producto existente según su ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID del producto
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Producto eliminado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Producto no encontrado
+
+  /tickets:
+    get:
+      summary: Obtiene todos los tickets
+      description: Obtiene una lista de todos los tickets.
+      responses:
+        '200':
+          description: Respuesta exitosa
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Ticket'
+    post:
+      summary: Crea un nuevo ticket
+      description: Crea un nuevo ticket con la información proporcionada en el cuerpo de la solicitud.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewTicket'
+      responses:
+        '201':
+          description: Ticket creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+  /tickets/{id}:
+    get:
+      summary: Obtiene un ticket por su ID
+      description: Obtiene un ticket específico según su ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID del ticket
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Respuesta exitosa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+        '404':
+          description: Ticket no encontrado
+    put:
+      summary: Actualiza un ticket existente
+      description: Actualiza un ticket existente con la información proporcionada en el cuerpo de la solicitud.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID del ticket
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewTicket'
+      responses:
+        '200':
+          description: Ticket actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+        '404':
+          description: Ticket no encontrado
+    delete:
+      summary: Elimina un ticket existente
+      description: Elimina un ticket existente según su ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID del ticket
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Ticket eliminado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+        '404':
+          description: Ticket no encontrado
+
+  /categories:
+    get:
+      summary: Obtiene todas las categorías
+      description: Obtiene una lista de todas las categorías.
+      responses:
+        '200':
+          description: Respuesta exitosa
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+    post:
+      summary: Crea una nueva categoría
+      description: Crea una nueva categoría con la información proporcionada en el cuerpo de la solicitud.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewCategory'
+      responses:
+        '201':
+          description: Categoría creada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+  /categories/{id}:
+    get:
+      summary: Obtiene una categoría por su ID
+      description: Obtiene una categoría específica según su ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID de la categoría
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Respuesta exitosa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '404':
+          description: Categoría no encontrada
+    put:
+      summary: Actualiza una categoría existente
+      description: Actualiza una categoría existente con la información proporcionada en el cuerpo de la solicitud.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID de la categoría
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewCategory'
+      responses:
+        '200':
+          description: Categoría actualizada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '404':
+          description: Categoría no encontrada
+    delete:
+      summary: Elimina una categoría existente
+      description: Elimina una categoría existente según su ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID de la categoría
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Categoría eliminada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '404':
+          description: Categoría no encontrada
+
+  /subcategories:
+    get:
+      summary: Obtiene todas las subcategorías
+      description: Obtiene una lista de todas las subcategorías.
+      responses:
+        '200':
+          description: Respuesta exitosa
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Subcategory'
+    post:
+      summary: Crea una nueva subcategoría
+      description: Crea una nueva subcategoría con la información proporcionada en el cuerpo de la solicitud.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewSubcategory'
+      responses:
+        '201':
+          description: Subcategoría creada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subcategory'
+  /subcategories/{id}:
+    get:
+      summary: Obtiene una subcategoría por su ID
+      description: Obtiene una subcategoría específica según su ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID de la subcategoría
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Respuesta exitosa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subcategory'
+        '404':
+          description: Subcategoría no encontrada
+    put:
+      summary: Actualiza una subcategoría existente
+      description: Actualiza una subcategoría existente con la información proporcionada en el cuerpo de la solicitud.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID de la subcategoría
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewSubcategory'
+      responses:
+        '200':
+          description: Subcategoría actualizada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subcategory'
+        '404':
+          description: Subcategoría no encontrada
+    delete:
+      summary: Elimina una subcategoría existente
+      description: Elimina una subcategoría existente según su ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID de la subcategoría
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Subcategoría eliminada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subcategory'
+        '404':
+          description: Subcategoría no encontrada
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+      required:
+        - id
+        - name
+        - price
+    NewProduct:
+      type: object
+      properties:
+        name:
+          type: string
+        price:
+          type: number
+      required:
+        - name
+        - price
+    Ticket:
+      type: object
+      properties:
+        id:
+          type: integer
+        usuario:
+          type: string
+        tipologia:
+          type: string
+        urgente:
+          type: boolean
+        comentario:
+          type: string
+        estado:
+          type: string
+      required:
+        - id
+        - usuario
+        - tipologia
+        - urgente
+        - comentario
+        - estado
+    NewTicket:
+      type: object
+      properties:
+        usuario:
+          type: string
+        tipologia:
+          type: string
+        urgente:
+          type: boolean
+        comentario:
+          type: string
+        estado:
+          type: string
+      required:
+        - usuario
+        - tipologia
+        - urgente
+        - comentario
+        - estado
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      required:
+        - id
+        - name
+    NewCategory:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+        - name
+    Subcategory:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      required:
+        - id
+        - name
+    NewSubcategory:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+        - name

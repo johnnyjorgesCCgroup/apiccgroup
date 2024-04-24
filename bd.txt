@@ -1,0 +1,74 @@
+PostgreSQL
+
+api_ticket_bd_ccgroup
+Password: 0HogeR4srXfqwLFGbiP98CADAT9BsWAL
+Internal Database URL: postgres://api_ticket_bd_ccgroup_user:0HogeR4srXfqwLFGbiP98CADAT9BsWAL@dpg-cmjt90un7f5s73cf4pug-a/api_ticket_bd_ccgroup
+External Database URL: postgres://api_ticket_bd_ccgroup_user:0HogeR4srXfqwLFGbiP98CADAT9BsWAL@dpg-cmjt90un7f5s73cf4pug-a.oregon-postgres.render.com/api_ticket_bd_ccgroup
+PSQL Command: PGPASSWORD=0HogeR4srXfqwLFGbiP98CADAT9BsWAL psql -h dpg-cmjt90un7f5s73cf4pug-a.oregon-postgres.render.com -U api_ticket_bd_ccgroup_user api_ticket_bd_ccgroup
+
+
+[
+  {
+    "usuario": "Sara",
+    "tipologia": "Consulta",
+    "fecha_creacion": "2024-01-16",
+    "fecha_actualizacion": null,
+    "urgente": false,
+    "comentario": "Necesito ayuda con un problema técnico",
+    "estado": "Abierto"
+  },
+  {
+    "usuario": "Jaime",
+    "tipologia": "Reclamo",
+    "fecha_creacion": "2024-01-16",
+    "fecha_actualizacion": null,
+    "urgente": true,
+    "comentario": "Producto defectuoso, quiero un reembolso",
+    "estado": "Abierto"
+  },
+  {
+    "usuario": "Ray",
+    "tipologia": "Solicitud",
+    "fecha_creacion": "2024-01-16",
+    "fecha_actualizacion": null,
+    "urgente": false,
+    "comentario": "Necesito más información sobre un producto",
+    "estado": "Abierto"
+  },
+  {
+    "usuario": "Francys",
+    "tipologia": "Reparación",
+    "fecha_creacion": "2024-01-16",
+    "fecha_actualizacion": null,
+    "urgente": true,
+    "comentario": "Problema con el servicio, necesito asistencia técnica",
+    "estado": "Abierto"
+  },
+  {
+    "usuario": "Cristian",
+    "tipologia": "Consulta",
+    "fecha_creacion": "2024-01-16",
+    "fecha_actualizacion": null,
+    "urgente": false,
+    "comentario": "¿Cuál es el plazo de entrega?",
+    "estado": "Abierto"
+  },
+  {
+    "usuario": "Rodolfo",
+    "tipologia": "Reclamo",
+    "fecha_creacion": "2024-01-16",
+    "fecha_actualizacion": null,
+    "urgente": true,
+    "comentario": "Pedido incorrecto, quiero una solución",
+    "estado": "Abierto"
+  },
+  {
+    "usuario": "Julio",
+    "tipologia": "Consulta",
+    "fecha_creacion": "2024-01-16",
+    "fecha_actualizacion": null,
+    "urgente": false,
+    "comentario": "Necesito formatear mi Laptop",
+    "estado": "Abierto"
+  }
+]
