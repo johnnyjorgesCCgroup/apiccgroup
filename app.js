@@ -16,7 +16,6 @@ config();
 
 const app = express();
 
-// Middleware CORS
 app.use(cors({
   origin: [
     'http://localhost:5173',
@@ -28,36 +27,20 @@ app.use(cors({
   ]
 }));
 
-
 app.use(express.json());
 
-// Usa las rutas de tickets
 app.use('/tickets', ticketRoutes);
-
-// Usa las rutas de productos
 app.use('/products', productRoutes);
-
-// Usa las rutas de productos
 app.use('/category', categoryRoutes);
-
-// Usa las rutas de productos
 app.use('/subcategory', subCategoryRoutes);
-
-// Usa las rutas de productos
 app.use('/incidents', incidentsRoutes);
-
-// Usa las rutas de productos
 app.use('/inventario', inventarioRoutes);
-
-// Usa las rutas de carga de imágenes
 app.use('/uploads', uploadRoutes);
 
-// Configuración de Swagger
 const swaggerDocument = YAML.load('./swagger.yaml'); // Ruta al archivo OpenAPI
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// Ruta para procesar los datos y devolver el resultado
 app.get('/procesarDatos', async (req, res) => {
     try {
         const result = await procesarDatos();
@@ -68,7 +51,40 @@ app.get('/procesarDatos', async (req, res) => {
     }
 });
 
-// Iniciar el servidor
+app.get('/procesarDatos/:id', async (req, res) => {
+  try {
+      const { id } = req.params;
+      const result = await procesarDatos();
+      const data = result.find(item => item.id === parseInt(id)); 
+      if (!data) {
+          return res.status(404).json({ error: 'No se encontró el dato con el ID proporcionado.' });
+      }
+      res.json(data);
+  } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Hubo un error al procesar la solicitud.' });
+  }
+});
+
+app.get('/procesarDatos/search/:query', async (req, res) => {
+  try {
+      const { query } = req.params;
+      const result = await procesarDatos();
+      const filteredData = result.filter(item =>
+          (item.oc && item.oc.includes(query)) ||
+          (item.document_number && item.document_number.includes(query)) ||
+          (item.client && item.client.includes(query))
+      );
+      if (filteredData.length === 0) {
+          return res.status(404).json({ error: 'No se encontraron coincidencias.' });
+      }
+      res.json(filteredData);
+  } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Hubo un error al procesar la solicitud.' });
+  }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);

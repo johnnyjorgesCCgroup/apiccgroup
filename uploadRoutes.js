@@ -2,20 +2,19 @@ import express from "express";
 import multer from "multer"; 
 import fs from "node:fs";
 import path from "path";
-import { v4 as uuidv4 } from 'uuid';
+import { pool } from './db.js';
 
 const router = express.Router();
 
 const upload = multer({ dest: 'salidas/evidenciasOC/' });
 
-let idCounter = 1; // Variable para mantener el contador de ID
-
 router.post('/images/single', upload.single('imagenEvidencia'), (req, res) => {
     console.log(req.file);
-    const orderNumber = req.query.orderNumber; // Obtener el número de orden de la consulta
-    saveImage(req.file, orderNumber);
+    const { client, document_number, product, orderNumber } = req.query; // Obtener los datos de la consulta
+    saveImage(req.file, client, document_number, product, orderNumber); // Asegúrate de pasar los valores correctos aquí
     res.send('Termina');
 });
+
 
 router.post('/images/multi', upload.array('photos', 10), (req, res) => {
     req.files.map(file => {
@@ -25,21 +24,24 @@ router.post('/images/multi', upload.array('photos', 10), (req, res) => {
     res.send("Termina Multi")
 });
 
-router.get('/images', (req, res) => {
+router.get('/images', async (req, res) => {
     try {
-        const imageFiles = fs.readdirSync('salidas/evidenciasOC/');
-        const imageList = imageFiles.map((imageName, index) => {
-            const stat = fs.statSync(`salidas/evidenciasOC/${imageName}`);
-            const id = idCounter++; // Obtener el siguiente ID y luego incrementar el contador
-            const date = formatDate(stat.birthtime); // Formatear la fecha
-            const archive = imageName;
-            const oc = path.parse(imageName).name; // Obtener el nombre del archivo sin la extensión
-            return { id, date, archive, oc };
+        const queryResult = await pool.query('SELECT * FROM imagenes');
+        const imageList = queryResult.rows.map(row => {
+            return {
+                id: row.id,
+                date: formatDate(row.fecha),
+                client: row.client,
+                document: row.document_number,
+                product: row.product,
+                archive: row.archive,
+                oc: row.oc,
+            };
         });
         res.json(imageList);
     } catch (err) {
         console.error(err);
-        res.status(500).send('Error al obtener la lista de imágenes');
+        res.status(500).send('Error al obtener la lista de imágenes desde la base de datos');
     }
 });
 
@@ -67,9 +69,21 @@ router.get('/images/:imageName', (req, res) => {
     }
 });
 
-function saveImage(file, orderNumber) {
-    const newPath = `./salidas/evidenciasOC/${orderNumber}.png`; // Usar el número de orden como nombre del archivo
+function saveImage(file, client, document_number, product, orderNumber) {
+    const fileExtension = path.extname(file.originalname); // Obtener la extensión del archivo
+    const newPath = `./salidas/evidenciasOC/${orderNumber}${fileExtension}`;
     fs.renameSync(file.path, newPath);
+    
+    // Insertar la información de la imagen en la base de datos
+    pool.query('INSERT INTO imagenes (fecha, client, document_number, product, archive, oc) VALUES ($1, $2, $3, $4, $5, $6)', [new Date(), client, document_number, product, newPath, orderNumber])
+        .then(() => {
+            console.log('Imagen guardada en la base de datos');
+            console.log('Datos guardados:', { fecha: new Date(), client, document_number, product, archive: newPath, oc: orderNumber });
+        })
+        .catch(err => {
+            console.error('Error al guardar la imagen en la base de datos:', err);
+        });
+
     return newPath;
 }
 
