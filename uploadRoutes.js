@@ -69,6 +69,36 @@ router.get('/images/:imageName', (req, res) => {
     }
 });
 
+router.get('/folder-size', (req, res) => {
+    // Especifica la ubicación relativa de la carpeta salidas/evidenciasOC
+    const folderPath = path.join(process.cwd(), 'salidas/evidenciasOC');
+
+    fs.readdir(folderPath, (err, files) => {
+        if (err) {
+            console.error('Error al leer la carpeta:', err);
+            return res.status(500).send('Error al leer la carpeta');
+        }
+
+        let totalSize = 0;
+
+        files.forEach(file => {
+            const filePath = path.join(folderPath, file);
+            const stats = fs.statSync(filePath);
+            totalSize += stats.size;
+        });
+
+        // Convertir el tamaño total a kilobytes o megabytes según sea necesario
+        const totalSizeKB = totalSize / 1024;
+        const totalSizeMB = totalSizeKB / 1024;
+
+        res.json({
+            totalSizeBytes: totalSize,
+            totalSizeKB,
+            totalSizeMB
+        });
+    });
+});
+
 function saveImage(file, client, document_number, product, orderNumber) {
     const fileExtension = path.extname(file.originalname); // Obtener la extensión del archivo
     const newPath = `./salidas/evidenciasOC/${orderNumber}${fileExtension}`;
