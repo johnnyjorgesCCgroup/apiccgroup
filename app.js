@@ -8,9 +8,11 @@ import subCategoryRoutes from './subCategoryRoutes.js';
 import incidentsRoutes from './incidentsRoutes.js';
 import inventarioRoutes from './inventarioRoutes.js';
 import uploadRoutes from './uploadRoutes.js';
+import datosProcesadosRoutes from './datosProcesadosRoutes.js';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 import { procesarDatos} from './procesarDatos.js';
+import procesarDatos2 from './procesarDatos2.js'
 
 config();
 
@@ -35,7 +37,9 @@ app.use('/category', categoryRoutes);
 app.use('/subcategory', subCategoryRoutes);
 app.use('/incidents', incidentsRoutes);
 app.use('/inventario', inventarioRoutes);
+app.use('/datosProcesados', datosProcesadosRoutes);
 app.use('/uploads', uploadRoutes);
+app.use(procesarDatos2);
 
 const swaggerDocument = YAML.load('./swagger.yaml'); // Ruta al archivo OpenAPI
 
