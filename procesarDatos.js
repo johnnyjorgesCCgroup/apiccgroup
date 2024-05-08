@@ -29,32 +29,28 @@ export async function procesarDatos() {
             throw new Error('Error al obtener los datos');
         }
 
-        const [cutData, movesData, incidentData, imageList] = await Promise.all([
+        const [cutData, movesData, incidentData] = await Promise.all([
             cutResponse.json(),
             movesResponse.json(),
             incidentResponse.json(),
-            getImageList()
         ]);
-        
-        const movesMap = new Map(movesData.data.map(move => [move.document_number, move]));
-        const incidentsMap = new Map(incidentData.data.map(incident => [incident.oc, incident]));
 
         const result = cutData.data.map(cut => {
-            const matchingMove = movesMap.get(cut.oc);
-            const hasMove = !!matchingMove;
-            const matchingIncident = incidentsMap.get(cut.oc);
-            const hasIncident = !!matchingIncident;
-            const matchingImage = imageList.find(image => image.oc === cut.oc);
-            const imageArchive = matchingImage ? matchingImage.archive : null;
+            const matchingMoves = movesData.data.filter(move => move.document_number === cut.oc);
+            const numMoves = matchingMoves.length;
+        
+            const matchingIncidents = incidentData.data.filter(incident => incident.oc === cut.oc);
+            const numIncidents = matchingIncidents.length; // Contamos cuántos incidentes están asociados a este corte
+        
             return {
                 ...cut,
-                idMove: matchingMove ? matchingMove.id : null,
-                whatMove: hasMove,
-                idIncident: matchingIncident ? matchingIncident.id : null,
-                whatIncident: hasIncident,
-                imageArchive
+                idMove: numMoves > 0 ? matchingMoves[0].id : null,
+                numMoves,
+                idIncident: numIncidents > 0 ? matchingIncidents[0].id : null,
+                numIncidents
             };
         });
+        
 
         return result;
     } catch (error) {
