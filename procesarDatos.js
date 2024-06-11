@@ -35,16 +35,13 @@ export async function procesarDatos() {
             incidentResponse.json(),
         ]);
 
-        // Extract the last 2000 records from the cut data
-        const cutDataLast2000 = cutData.data.slice(-2000);
-
-        const result = cutDataLast2000.map(cut => {
+        const result = cutData.data.map(cut => {
             const matchingMoves = movesData.data.filter(move => move.document_number === cut.oc);
             const numMoves = matchingMoves.length;
-
+        
             const matchingIncidents = incidentData.data.filter(incident => incident.oc === cut.oc);
             const numIncidents = matchingIncidents.length; // Contamos cuántos incidentes están asociados a este corte
-
+        
             return {
                 ...cut,
                 idMove: numMoves > 0 ? matchingMoves[0].id : null,
@@ -53,6 +50,7 @@ export async function procesarDatos() {
                 numIncidents
             };
         });
+        
 
         return result;
     } catch (error) {
