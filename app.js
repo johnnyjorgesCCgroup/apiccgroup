@@ -55,11 +55,11 @@ app.get('/procesarDatos', async (req, res) => {
     }
 });
 
-app.get('/procesarDatos/:id', async (req, res) => {
+app.get('/procesarDatos/:oc', async (req, res) => {
   try {
-      const { id } = req.params;
+      const { oc } = req.params;
       const result = await procesarDatos();
-      const data = result.find(item => item.id === parseInt(id)); 
+      const data = result.find(item => item.oc === oc); 
       if (!data) {
           return res.status(404).json({ error: 'No se encontró el dato con el ID proporcionado.' });
       }
