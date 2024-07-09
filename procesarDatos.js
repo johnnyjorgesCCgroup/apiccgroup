@@ -1,20 +1,4 @@
 import fetch from 'node-fetch';
-import fs from 'fs';
-import path from 'path';
-
-async function getImageList() {
-    try {
-        const imageFiles = await fs.promises.readdir('salidas/evidenciasOC/');
-        const imageList = imageFiles.map((imageName) => {
-            const oc = path.parse(imageName).name;
-            return { oc, archive: imageName };
-        });
-        return imageList;
-    } catch (err) {
-        console.error(err);
-        throw new Error('Error al obtener la lista de imágenes');
-    }
-}
 
 // Función para procesar los datos
 export async function procesarDatos() {
@@ -35,22 +19,40 @@ export async function procesarDatos() {
             incidentResponse.json(),
         ]);
 
+        // Crear mapas para búsqueda rápida
+        const movesMap = new Map();
+        movesData.data.forEach(move => {
+            if (!movesMap.has(move.document_number)) {
+                movesMap.set(move.document_number, []);
+            }
+            movesMap.get(move.document_number).push(move);
+        });
+
+        const incidentsMap = new Map();
+        incidentData.data.forEach(incident => {
+            if (!incidentsMap.has(incident.oc)) {
+                incidentsMap.set(incident.oc, []);
+            }
+            incidentsMap.get(incident.oc).push(incident);
+        });
+
         const result = cutData.data.map(cut => {
-            const matchingMoves = movesData.data.filter(move => move.document_number === cut.oc);
+            const matchingMoves = movesMap.get(cut.oc) || [];
             const numMoves = matchingMoves.length;
         
-            const matchingIncidents = incidentData.data.filter(incident => incident.oc === cut.oc);
+            const matchingIncidents = incidentsMap.get(cut.oc) || [];
             const numIncidents = matchingIncidents.length; // Contamos cuántos incidentes están asociados a este corte
         
             return {
                 ...cut,
                 idMove: numMoves > 0 ? matchingMoves[0].id : null,
+                dateMove: numMoves > 0 ? matchingMoves[0].date : null,
+                userMove: numMoves > 0 ? matchingMoves[0].user_id : null,
                 numMoves,
                 idIncident: numIncidents > 0 ? matchingIncidents[0].id : null,
                 numIncidents
             };
         });
-        
 
         return result;
     } catch (error) {
