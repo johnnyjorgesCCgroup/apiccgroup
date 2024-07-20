@@ -13,6 +13,7 @@ import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 import { procesarDatos} from './procesarDatos.js';
 import procesarDatos2 from './procesarDatos2.js'
+import revisionRoutes from './revisionRoutes.js'
 
 config();
 
@@ -32,6 +33,7 @@ app.use(cors({
 app.use(express.json());
 
 app.use('/tickets', ticketRoutes);
+app.use('/revision', revisionRoutes);
 app.use('/products', productRoutes);
 app.use('/category', categoryRoutes);
 app.use('/subcategory', subCategoryRoutes);
