@@ -15,11 +15,11 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Obtener un registro específico de la tabla estado por ID
-router.get('/:id', async (req, res) => {
-  const { id } = req.params;
+// Obtener un registro específico de la tabla estado por OC
+router.get('/:oc', async (req, res) => {
+  const { oc } = req.params;
   try {
-    const result = await pool.query('SELECT * FROM estado WHERE id = $1', [id]);
+    const result = await pool.query('SELECT * FROM estado WHERE oc = $1', [oc]);
     if (result.rows.length > 0) {
       return res.json(result.rows[0]);
     } else {
@@ -33,14 +33,14 @@ router.get('/:id', async (req, res) => {
 
 // Crear un nuevo registro en la tabla estado
 router.post('/', async (req, res) => {
-  const { oc, statusEmpaquetado, statusEnRuta, statusEntregado, usuario } = req.body;
+  const { oc, statusEmpaquetado, usuarioEmpaquetado, statusEnRuta, usuarioEnRuta, statusEntregado, usuarioEntregado } = req.body;
   const formattedStatusEmpaquetado = dayjs(statusEmpaquetado).format('YYYY-MM-DD');
   const formattedStatusEnRuta = dayjs(statusEnRuta).format('YYYY-MM-DD');
   const formattedStatusEntregado = dayjs(statusEntregado).format('YYYY-MM-DD');
   try {
     const result = await pool.query(
-      'INSERT INTO estado (oc, statusEmpaquetado, statusEnRuta, statusEntregado, usuario) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [oc, formattedStatusEmpaquetado, formattedStatusEnRuta, formattedStatusEntregado, usuario]
+      'INSERT INTO estado (oc, statusEmpaquetado, usuarioEmpaquetado, statusEnRuta, usuarioEnRuta, statusEntregado, usuarioEntregado) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+      [oc, formattedStatusEmpaquetado, usuarioEmpaquetado, formattedStatusEnRuta, usuarioEnRuta, formattedStatusEntregado, usuarioEntregado]
     );
     return res.json(result.rows[0]);
   } catch (error) {
@@ -49,17 +49,17 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Actualizar un registro específico de la tabla estado por ID
-router.put('/:id', async (req, res) => {
-  const { id } = req.params;
-  const { oc, statusEmpaquetado, statusEnRuta, statusEntregado, usuario } = req.body;
+// Actualizar un registro específico de la tabla estado por OC
+router.put('/:oc', async (req, res) => {
+  const { oc } = req.params;
+  const { statusEmpaquetado, usuarioEmpaquetado, statusEnRuta, usuarioEnRuta, statusEntregado, usuarioEntregado } = req.body;
   const formattedStatusEmpaquetado = dayjs(statusEmpaquetado).format('YYYY-MM-DD');
   const formattedStatusEnRuta = dayjs(statusEnRuta).format('YYYY-MM-DD');
   const formattedStatusEntregado = dayjs(statusEntregado).format('YYYY-MM-DD');
   try {
     const result = await pool.query(
-      'UPDATE estado SET oc = $1, statusEmpaquetado = $2, statusEnRuta = $3, statusEntregado = $4, usuario = $5 WHERE id = $6 RETURNING *',
-      [oc, formattedStatusEmpaquetado, formattedStatusEnRuta, formattedStatusEntregado, usuario, id]
+      'UPDATE estado SET statusEmpaquetado = $1, usuarioEmpaquetado = $2, statusEnRuta = $3, usuarioEnRuta = $4, statusEntregado = $5, usuarioEntregado = $6 WHERE oc = $7 RETURNING *',
+      [formattedStatusEmpaquetado, usuarioEmpaquetado, formattedStatusEnRuta, usuarioEnRuta, formattedStatusEntregado, usuarioEntregado, oc]
     );
     if (result.rows.length > 0) {
       return res.json(result.rows[0]);
@@ -72,11 +72,11 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// Eliminar un registro específico de la tabla estado por ID
-router.delete('/:id', async (req, res) => {
-  const { id } = req.params;
+// Eliminar un registro específico de la tabla estado por OC
+router.delete('/:oc', async (req, res) => {
+  const { oc } = req.params;
   try {
-    const result = await pool.query('DELETE FROM estado WHERE id = $1 RETURNING *', [id]);
+    const result = await pool.query('DELETE FROM estado WHERE oc = $1 RETURNING *', [oc]);
     if (result.rows.length > 0) {
       return res.json(result.rows[0]);
     } else {
