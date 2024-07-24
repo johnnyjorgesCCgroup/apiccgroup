@@ -66,6 +66,25 @@ router.put('/:oc', async (req, res) => {
   }
 });
 
+router.put('/entregado/:oc', async (req, res) => {
+  const { oc } = req.params;
+  const { statusEntregado, usuarioEntregado } = req.body;
+  try {
+    const result = await pool.query(
+      'UPDATE estado SET statusEntregado = $1, usuarioEntregado = $2 WHERE oc = $3 RETURNING *',
+      [statusEntregado, usuarioEntregado, oc]
+    );
+    if (result.rows.length > 0) {
+      return res.json(result.rows[0]);
+    } else {
+      return res.status(404).json({ error: 'Estado not found' });
+    }
+  } catch (error) {
+    console.error('Error updating estado:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 // Eliminar un registro específico de la tabla estado por OC
 router.delete('/:oc', async (req, res) => {
   const { oc } = req.params;
