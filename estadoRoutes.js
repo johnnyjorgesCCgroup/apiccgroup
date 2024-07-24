@@ -34,9 +34,9 @@ router.get('/:oc', async (req, res) => {
 // Crear un nuevo registro en la tabla estado
 router.post('/', async (req, res) => {
   const { oc, statusEmpaquetado, usuarioEmpaquetado, statusEnRuta, usuarioEnRuta, statusEntregado, usuarioEntregado } = req.body;
-  const formattedStatusEmpaquetado = dayjs(statusEmpaquetado).format('YYYY-MM-DD');
-  const formattedStatusEnRuta = dayjs(statusEnRuta).format('YYYY-MM-DD');
-  const formattedStatusEntregado = dayjs(statusEntregado).format('YYYY-MM-DD');
+  const formattedStatusEmpaquetado = dayjs(statusEmpaquetado).format('YYYY-MM-DD HH:mm');
+  const formattedStatusEnRuta = dayjs(statusEnRuta).format('YYYY-MM-DD HH:mm');
+  const formattedStatusEntregado = dayjs(statusEntregado).format('YYYY-MM-DD HH:mm');
   try {
     const result = await pool.query(
       'INSERT INTO estado (oc, statusEmpaquetado, usuarioEmpaquetado, statusEnRuta, usuarioEnRuta, statusEntregado, usuarioEntregado) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
@@ -53,9 +53,9 @@ router.post('/', async (req, res) => {
 router.put('/:oc', async (req, res) => {
   const { oc } = req.params;
   const { statusEmpaquetado, usuarioEmpaquetado, statusEnRuta, usuarioEnRuta, statusEntregado, usuarioEntregado } = req.body;
-  const formattedStatusEmpaquetado = dayjs(statusEmpaquetado).format('YYYY-MM-DD');
-  const formattedStatusEnRuta = dayjs(statusEnRuta).format('YYYY-MM-DD');
-  const formattedStatusEntregado = dayjs(statusEntregado).format('YYYY-MM-DD');
+  const formattedStatusEmpaquetado = dayjs(statusEmpaquetado).format('YYYY-MM-DD HH:mm');
+  const formattedStatusEnRuta = dayjs(statusEnRuta).format('YYYY-MM-DD HH:mm');
+  const formattedStatusEntregado = dayjs(statusEntregado).format('YYYY-MM-DD HH:mm');
   try {
     const result = await pool.query(
       'UPDATE estado SET statusEmpaquetado = $1, usuarioEmpaquetado = $2, statusEnRuta = $3, usuarioEnRuta = $4, statusEntregado = $5, usuarioEntregado = $6 WHERE oc = $7 RETURNING *',
