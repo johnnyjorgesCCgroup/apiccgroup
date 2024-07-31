@@ -58,7 +58,7 @@ router.put('/:oc', async (req, res) => {
     if (result.rows.length > 0) {
       return res.json(result.rows[0]);
     } else {
-      return res.status(404).json({ error: 'Estado not found' });
+      return res.status(404).json({ error: 'Estado not found put:oc' });
     }
   } catch (error) {
     console.error('Error updating estado:', error);
@@ -82,6 +82,67 @@ router.put('/entregado/:oc', async (req, res) => {
   } catch (error) {
     console.error('Error updating estado:', error);
     res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+router.put('/enruta/:oc', async (req, res) => {
+  const { oc } = req.params;
+  const { statusEnRuta, usuarioEnRuta } = req.body;
+  try {
+    const result = await pool.query(
+      'UPDATE estado SET statusEnRuta = $1, usuarioEnRuta = $2 WHERE oc = $3 RETURNING *',
+      [statusEnRuta, usuarioEnRuta, oc]
+    );
+    if (result.rows.length > 0) {
+      return res.json(result.rows[0]);
+    } else {
+      return res.status(404).json({ error: 'Estado not found' });
+    }
+  } catch (error) {
+    console.error('Error updating estado:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+router.put('/masive/enruta', async (req, res) => {
+  const updates = req.body; // Espera un array de objetos { oc, statusEnRuta, usuarioEnRuta }
+
+  if (!Array.isArray(updates)) {
+    return res.status(400).json({ error: 'Invalid data format. Expecting an array of updates.' });
+  }
+
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    const updatePromises = updates.map(({ oc, statusEnRuta, usuarioEnRuta }) => {
+      console.log(`Updating OC: ${oc}, statusEnRuta: ${statusEnRuta}, usuarioEnRuta: ${usuarioEnRuta}`);
+      return client.query(
+        'UPDATE estado SET statusEnRuta = $1, usuarioEnRuta = $2 WHERE oc = $3 RETURNING *',
+        [statusEnRuta, usuarioEnRuta, oc]
+      );
+    });
+
+    const results = await Promise.all(updatePromises);
+
+    // Verifica si se encontraron y actualizaron todas las OCs proporcionadas
+    const notFoundOCs = updates.filter((_, index) => results[index].rowCount === 0).map(update => update.oc);
+    if (notFoundOCs.length > 0) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({ error: 'Some OCs not found', notFoundOCs });
+    }
+
+    await client.query('COMMIT');
+
+    const updatedRows = results.map(result => result.rows[0]);
+    res.json(updatedRows);
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Error updating estado:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    client.release();
   }
 });
 
