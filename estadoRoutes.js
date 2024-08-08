@@ -104,6 +104,25 @@ router.put('/enruta/:oc', async (req, res) => {
   }
 });
 
+router.put('/evidencia/:oc', async (req, res) => {
+  const { oc } = req.params;
+  const { list_status, obs_status, img_status, fecha_evidencia } = req.body;
+  try {
+    const result = await pool.query(
+      'UPDATE estado SET list_status = $1, obs_status = $2, img_status = $3, fecha_evidencia = $4 WHERE oc = $5 RETURNING *',
+      [list_status, obs_status, img_status, fecha_evidencia, oc]
+    );
+    if (result.rows.length > 0) {
+      return res.json(result.rows[0]);
+    } else {
+      return res.status(404).json({ error: 'Estado not found' });
+    }
+  } catch (error) {
+    console.error('Error updating estado:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 router.put('/masive/enruta', async (req, res) => {
   const updates = req.body; // Espera un array de objetos { oc, statusEnRuta, usuarioEnRuta }
 
